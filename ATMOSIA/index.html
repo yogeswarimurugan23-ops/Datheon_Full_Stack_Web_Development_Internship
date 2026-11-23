@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atmosia – Discover Weather, Explore the World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Cinematic mountain + lake scene (pure SVG, no image files needed) -->
+<div class="scene" aria-hidden="true">
+  <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#050f4a"/><stop offset=".5" stop-color="#1259d6"/><stop offset="1" stop-color="#5fb4ff"/></linearGradient>
+      <radialGradient id="sun" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff8c4"/><stop offset=".25" stop-color="#ffd25a" stop-opacity=".9"/><stop offset="1" stop-color="#ff9a3c" stop-opacity="0"/></radialGradient>
+      <linearGradient id="lake" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b8be0"/><stop offset=".5" stop-color="#123f9c"/><stop offset="1" stop-color="#06185e"/></linearGradient>
+      <linearGradient id="mtL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9d6ff"/><stop offset=".35" stop-color="#4a79c4"/><stop offset="1" stop-color="#14306e"/></linearGradient>
+      <linearGradient id="mtR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd9b0"/><stop offset=".35" stop-color="#7a7fc4"/><stop offset="1" stop-color="#1a2f6e"/></linearGradient>
+      <filter id="blur"><feGaussianBlur stdDeviation="14"/></filter>
+    </defs>
+    <rect width="1600" height="900" fill="url(#sky)"/>
+    <circle cx="1380" cy="330" r="260" fill="url(#sun)"/>
+    <circle cx="1380" cy="330" r="62" fill="#fff3b0"/>
+    <g fill="#fff" opacity=".85" filter="url(#blur)"><ellipse cx="170" cy="250" rx="190" ry="90"/><ellipse cx="300" cy="330" rx="170" ry="70"/><ellipse cx="80" cy="400" rx="150" ry="60"/><ellipse cx="1180" cy="430" rx="180" ry="40" fill="#ffd6b0"/></g>
+    <path d="M0 640 L120 520 L210 570 L330 430 L470 600 L560 560 L640 660 Z" fill="url(#mtL)"/>
+    <path d="M1000 660 L1130 560 L1260 470 L1330 540 L1440 440 L1600 560 L1600 680 Z" fill="url(#mtR)"/>
+    <path d="M0 700 Q200 620 420 690 T800 700 L800 720 L0 720Z" fill="#0c3a6a" opacity=".8"/>
+    <g fill="#0a2d55"><path d="M0 720 L40 600 L80 720Z M60 720 L110 570 L160 720Z M140 720 L180 620 L230 720Z M1420 720 L1470 590 L1520 720Z M1500 720 L1550 560 L1600 720Z"/></g>
+    <rect y="700" width="1600" height="200" fill="url(#lake)"/>
+    <ellipse class="glint" cx="1380" cy="780" rx="150" ry="14" fill="#ffd77a" opacity=".55"/>
+    <ellipse class="glint" cx="1380" cy="830" rx="90" ry="8" fill="#ffd77a" opacity=".4"/>
+  </svg>
+</div>
+
+<header class="nav glass" id="nav">
+  <a class="brand" href="#home"><span class="logo">☀️</span>Atmosia</a>
+  <nav class="links" aria-label="Main">
+    <a href="#home" class="active" data-nav>🏠︎ <span>Home</span></a>
+    <a href="#weather" data-nav>☁️ <span>Weather</span></a>
+    <a href="#forecast" data-nav>📊 <span>Forecast</span></a>
+    <a href="#about" data-nav>ℹ️ <span>About</span></a>
+  </nav>
+  <div class="nav-right">
+    <button id="themeBtn" class="icon-btn" aria-label="Toggle brightness">☀︎</button>
+    <div class="clock"><small id="clockDate">—</small><strong id="clockTime">—</strong></div>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="hero">
+    <div class="title"><span class="hero-icon">⛅</span><h1>Atmosia</h1></div>
+    <p class="tagline"><i></i><span>Discover Weather, Explore the World</span><i></i></p>
+    <form id="searchForm" class="search glass" autocomplete="off">
+      <span class="s-ico">🔍︎</span>
+      <input id="cityInput" type="text" placeholder="Search for a city..." aria-label="City name" required>
+      <button type="submit" class="btn-search">➤ Search</button>
+    </form>
+    <div class="chips">
+      <button class="chip glass" data-city="Chennai">📍 Chennai</button>
+      <button class="chip glass" data-city="London">🏙 London</button>
+      <button class="chip glass" data-city="Tokyo">✈️ Tokyo</button>
+      <button class="chip glass" data-city="New York">🗽 New York</button>
+    </div>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section id="weather" class="current glass tilt" aria-live="polite">
+    <button id="refreshBtn" class="refresh glass">⟳ Refresh</button>
+    <div class="c-icon"><img id="curIcon" alt="" src=""></div>
+    <div class="c-main">
+      <h2 id="cityName">—</h2>
+      <p class="country"><img id="flag" alt="" src=""><span id="countryName">—</span></p>
+      <div class="temp" id="temp">--°C</div>
+      <p class="cond" id="cond">—</p>
+      <p class="feels" id="feels"></p>
+    </div>
+    <ul class="stats">
+      <li><span>💧 Humidity</span><b id="humidity">--</b></li>
+      <li><span>🌬 Wind Speed</span><b id="wind">--</b></li>
+      <li><span>⏲ Pressure</span><b id="pressure">--</b></li>
+      <li><span>👁 Visibility</span><b id="visibility">--</b></li>
+    </ul>
+    <div class="sun">
+      <svg viewBox="0 0 200 105" aria-hidden="true">
+        <path d="M10 98 A90 90 0 0 1 190 98" fill="none" stroke="url(#arcG)" stroke-width="4" stroke-linecap="round"/>
+        <defs><linearGradient id="arcG"><stop offset="0" stop-color="#ffb02e"/><stop offset="1" stop-color="#ff8a00"/></linearGradient></defs>
+        <circle id="sunDot" cx="10" cy="98" r="9" fill="#ffd24a" class="sun-dot"/>
+      </svg>
+      <div class="times"><div><b id="sunrise">--:--</b><span>Sunrise</span></div><div><b id="sunset">--:--</b><span>Sunset</span></div></div>
+    </div>
+  </section>
+
+  <section id="forecast" class="forecast">
+    <div class="f-head">
+      <h3>📅 5-Day Forecast</h3>
+      <div class="unit glass" role="group" aria-label="Temperature unit">
+        <button id="btnC" class="on">🌡 °C</button><button id="btnF">°F</button>
+      </div>
+    </div>
+    <div class="f-grid" id="fGrid"></div>
+  </section>
+
+  <section id="about" class="about glass">
+    <h3>About Atmosia</h3>
+    <p>Atmosia shows live conditions and a 5-day outlook for any city in the world, powered by OpenWeatherMap. Search a city, switch between °C and °F, and refresh any time for the latest readings.</p>
+  </section>
+</main>
+
+<footer>© <span id="yr"></span> Atmosia · Weather data by OpenWeatherMap</footer>
+<script src="script.js"></script>
+</body>
+</html>
