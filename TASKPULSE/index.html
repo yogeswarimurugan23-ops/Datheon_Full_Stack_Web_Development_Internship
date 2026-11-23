@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskPulse 3D – Take Control of Your Time</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loader" aria-hidden="true"><div class="ring"></div><span>TaskPulse</span></div>
+  <canvas id="bg" aria-hidden="true"></canvas>
+  <div id="fallback" aria-hidden="true"></div>
+  <div id="glow" aria-hidden="true"></div>
+  <div id="scrim"></div>
+
+  <header class="topnav">
+    <a class="brand" href="#home"><span class="orb"></span>TaskPulse</a>
+    <nav id="links"><a href="#home"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8v10H3z"/></svg>Home</a><a href="#dashboard"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Dashboard</a><a href="#analyticsSec"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Analytics</a><a href="#about"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>About</a></nav>
+    <div class="right">
+      <span class="pill"><i></i>Stay Productive</span>
+      <div id="profile" hidden>
+        <button id="profileBtn" class="btn ghost" aria-haspopup="true"><span class="avatar" id="avatar">?</span><span id="pName"></span></button>
+        <div id="profileMenu" class="glass" hidden><b id="pFull"></b><small id="pEmail" class="muted"></small><button id="logoutBtn" class="btn">Log out</button></div>
+      </div>
+    </div>
+    <button id="menuBtn" class="btn ghost" aria-label="Open menu">Menu</button>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="hero-copy">
+      <h1>Take Control<br>of <span class="grad">Your Time.</span></h1>
+      <p>Plan smarter. Stay focused. Get more done.</p>
+      <div class="hero-btns">
+        <a class="btn primary magnetic" href="#dashboard">Explore Dashboard <span aria-hidden="true">&rarr;</span></a>
+        <button id="getStarted" class="btn magnetic">&#9654; Get Started</button>
+      </div>
+      <ul class="feats">
+        <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Organize<br>Tasks</li>
+        <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Track<br>Progress</li>
+        <li><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>Boost<br>Productivity</li>
+      </ul>
+    </div>
+    <span class="hint">Scroll</span>
+  </section>
+
+  <main>
+    <section id="dashboard" class="reveal">
+      <div class="head">
+        <div><p id="greet" class="greet"></p><p id="today-date"></p><h2>Welcome to Your Productivity Space</h2></div>
+        <button id="quickAdd" class="btn primary magnetic">+ Quick Add Task</button>
+      </div>
+      <div class="stats">
+        <article class="glass stat tilt"><span>Total Tasks</span><strong id="s-total">0</strong></article>
+        <article class="glass stat tilt"><span>Active Tasks</span><strong id="s-active">0</strong></article>
+        <article class="glass stat tilt"><span>Completed Tasks</span><strong id="s-done">0</strong></article>
+        <article class="glass stat tilt"><span>Overdue Tasks</span><strong id="s-over">0</strong></article>
+      </div>
+      <div class="glass progress glow-border">
+        <div class="ph"><span>Productivity Progress</span><strong id="s-pct">0%</strong></div>
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="barFill"></i></div>
+      </div>
+      <div class="grid3">
+        <div id="analytics" class="glass tilt">
+          <h3>Weekly activity</h3>
+          <div id="chart" class="chart"></div>
+          <p class="legend"><i class="b1"></i>Created <i class="b2"></i>Completed</p>
+        </div>
+        <div class="glass tilt"><h3>Recent tasks</h3><ul id="recent" class="plain"></ul></div>
+        <div class="glass tilt"><h3>Upcoming deadlines</h3><ul id="upcoming" class="plain"></ul></div>
+      </div>
+    </section>
+
+    <section id="tasksSection" class="reveal">
+      <h2 id="listTitle">All tasks</h2>
+      <div class="views">
+        <button class="nav active" data-view="all">All tasks <b id="n-all">0</b></button>
+        <button class="nav" data-view="today">Today <b id="n-today">0</b></button>
+        <button class="nav" data-view="upcoming">Upcoming <b id="n-upcoming">0</b></button>
+        <button class="nav" data-view="overdue">Overdue <b id="n-overdue">0</b></button>
+        <button id="clearDone" class="btn ghost">Clear completed</button>
+      </div>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="Search tasks by title" aria-label="Search tasks by title">
+        <select id="catFilter" aria-label="Filter by category">
+          <option value="all">All categories</option><option>Work</option><option>Personal</option><option>Study</option>
+        </select>
+        <select id="sortBy" aria-label="Sort tasks">
+          <option value="manual">Manual order</option><option value="due">Sort by due date</option>
+        </select>
+        <div class="tabs" role="group" aria-label="Status filter">
+          <button class="tab active" data-status="all">All</button>
+          <button class="tab" data-status="active">Active</button>
+          <button class="tab" data-status="done">Completed</button>
+        </div>
+      </div>
+      <ul id="list"></ul>
+      <div id="empty" hidden>
+        <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+          <ellipse cx="60" cy="60" rx="52" ry="20" fill="none" stroke="#22d3ee" stroke-opacity=".5" transform="rotate(-20 60 60)"/>
+          <circle cx="60" cy="60" r="22" fill="none" stroke="#8b5cf6" stroke-width="2"/><circle cx="104" cy="44" r="5" fill="#22d3ee"/>
+        </svg>
+        <p id="emptyMsg"></p>
+      </div>
+    </section>
+    <section id="analyticsSec" class="reveal">
+      <h2>Analytics</h2>
+      <div class="grid3">
+        <div class="glass tilt"><h3>Weekly productivity</h3><div id="chart2" class="chart"></div>
+          <p class="legend"><i class="b1"></i>Created <i class="b2"></i>Completed</p></div>
+        <div class="glass tilt"><h3>Completed vs pending</h3><div id="donut" class="donut"><b id="donutPct">0%</b></div>
+          <p class="legend"><i class="b2"></i><span id="dl1"></span><i class="b1"></i><span id="dl2"></span></p></div>
+        <div class="glass tilt"><h3>Category distribution</h3><div id="cats"></div></div>
+      </div>
+    </section>
+
+    <section id="about" class="reveal">
+      <h2>About TaskPulse</h2>
+      <div class="glass about">
+        <p>TaskPulse keeps your work, personal and study tasks in one calm place. Everything is stored in this browser, so there is nothing to sign up for and your tasks stay on your device.</p>
+        <ul class="plain"><li>Organise tasks by category, priority and due date</li><li>Reorder tasks by dragging them</li><li>See progress and weekly activity update as you work</li></ul>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="taskDialog">
+    <form id="taskForm" method="dialog" novalidate>
+      <h2 id="dialogTitle">New task</h2>
+      <label>Title<input id="f-title" maxlength="80" required></label>
+      <label>Description<textarea id="f-desc" rows="3" maxlength="300"></textarea></label>
+      <div class="row">
+        <label>Category<select id="f-cat"><option>Work</option><option>Personal</option><option>Study</option></select></label>
+        <label>Priority<select id="f-pri"><option>High</option><option selected>Medium</option><option>Low</option></select></label>
+      </div>
+      <label>Due date<input id="f-due" type="date"></label>
+      <p id="formError" role="alert"></p>
+      <div class="actions">
+        <button type="button" id="cancelBtn" class="btn ghost">Cancel</button>
+        <button type="submit" class="btn primary">Save task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="confirmDialog">
+    <h2>Delete this task?</h2>
+    <p id="confirmText"></p>
+    <div class="actions">
+      <button id="confirmNo" class="btn ghost">Keep task</button>
+      <button id="confirmYes" class="btn danger">Delete task</button>
+    </div>
+  </dialog>
+
+  <div id="authView" class="auth pending" hidden>
+    <div class="glass auth-card glow-border">
+      <div class="brand"><span class="orb"></span>TaskPulse</div>
+      <p id="authBanner" class="banner" hidden></p>
+      <form id="loginForm" data-view="login" novalidate>
+        <h2>Welcome back</h2><p class="muted">Log in to your productivity space.</p>
+        <label>Email address<input id="l-email" type="email" autocomplete="email"><small class="err" data-for="l-email"></small></label>
+        <label>Password<div class="pw"><input id="l-pass" type="password" autocomplete="current-password"><button type="button" class="eye" data-eye="l-pass" aria-label="Show password">Show</button></div><small class="err" data-for="l-pass"></small></label>
+        <div class="row2"><label class="check"><input id="l-remember" type="checkbox" checked> Remember me</label><a class="link" href="#/forgot">Forgot password?</a></div>
+        <p class="err form-err" role="alert"></p>
+        <button class="btn primary" type="submit">Log in</button>
+        <p class="switch">New here? <a class="link" href="#/signup">Create account</a></p>
+      </form>
+      <form id="signupForm" data-view="signup" hidden novalidate>
+        <h2>Create your account</h2><p class="muted">Your tasks are private to your account.</p>
+        <label>Full name<input id="s-name" type="text" autocomplete="name"><small class="err" data-for="s-name"></small></label>
+        <label>Email address<input id="s-email" type="email" autocomplete="email"><small class="err" data-for="s-email"></small></label>
+        <label>Password<div class="pw"><input id="s-pass" type="password" autocomplete="new-password"><button type="button" class="eye" data-eye="s-pass" aria-label="Show password">Show</button></div><small class="err" data-for="s-pass"></small></label>
+        <label>Confirm password<div class="pw"><input id="s-pass2" type="password" autocomplete="new-password"><button type="button" class="eye" data-eye="s-pass2" aria-label="Show password">Show</button></div><small class="err" data-for="s-pass2"></small></label>
+        <p class="err form-err" role="alert"></p>
+        <button class="btn primary" type="submit">Create account</button>
+        <p class="switch">Already have an account? <a class="link" href="#/login">Log in</a></p>
+      </form>
+      <form id="resetForm" data-view="forgot" hidden novalidate>
+        <h2>Reset password</h2><p class="muted">We will email you a reset link.</p>
+        <label>Email address<input id="r-email" type="email" autocomplete="email"><small class="err" data-for="r-email"></small></label>
+        <p class="err form-err" role="alert"></p>
+        <button class="btn primary" type="submit">Send reset link</button>
+        <p class="switch"><a class="link" href="#/login">Back to log in</a></p>
+      </form>
+      <form id="updateForm" data-view="update" hidden novalidate>
+        <h2>Choose a new password</h2><p class="muted">Enter a new password for your account.</p>
+        <label>New password<div class="pw"><input id="u-pass" type="password" autocomplete="new-password"><button type="button" class="eye" data-eye="u-pass" aria-label="Show password">Show</button></div><small class="err" data-for="u-pass"></small></label>
+        <label>Confirm new password<div class="pw"><input id="u-pass2" type="password" autocomplete="new-password"><button type="button" class="eye" data-eye="u-pass2" aria-label="Show password">Show</button></div><small class="err" data-for="u-pass2"></small></label>
+        <p class="err form-err" role="alert"></p>
+        <button class="btn primary" type="submit">Update password</button>
+      </form>
+    </div>
+  </div>
+
+  <dialog id="migrateDialog">
+    <h2>Import your earlier tasks?</h2>
+    <p id="migrateText"></p>
+    <div class="actions">
+      <button id="mNever" class="btn ghost">Don't ask again</button>
+      <button id="mLater" class="btn ghost">Not now</button>
+      <button id="mImport" class="btn primary">Import tasks</button>
+    </div>
+  </dialog>
+
+  <div id="toasts" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="script.js"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
